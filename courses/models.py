@@ -12,6 +12,13 @@ class User(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
+class Speaker(models.Model):
+
+    name = models.CharField(max_length=255, null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    bio = models.TextField(verbose_name='Биография спикера', null=True, blank=True)
+    photo = models.ImageField(upload_to='speakers/', verbose_name='Фото спикера', null=True, blank=True)
+
 
 class Course(models.Model):
 
@@ -19,6 +26,7 @@ class Course(models.Model):
     slug = models.SlugField(unique=True, verbose_name='URL')
     short_description = models.TextField(verbose_name='Краткое описание')
     full_description = models.TextField(verbose_name='Полное описание')
+    speaker=models.ForeignKey(Speaker, on_delete=models.CASCADE, verbose_name='Спикер', null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
     preview_video_url = models.URLField(blank=True, verbose_name='Превью видео')
     banner_image = models.ImageField(upload_to='courses/banners/', blank=True, verbose_name='Баннер')
@@ -36,6 +44,9 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title
+
+
+
 
 
 class Module(models.Model):
