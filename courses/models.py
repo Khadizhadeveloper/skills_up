@@ -12,12 +12,26 @@ class User(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
+
 class Speaker(models.Model):
 
-    name = models.CharField(max_length=255, null=True, blank=True)
-    phone = models.CharField(max_length=20, null=True, blank=True)
-    bio = models.TextField(verbose_name='Биография спикера', null=True, blank=True)
-    photo = models.ImageField(upload_to='speakers/', verbose_name='Фото спикера', null=True, blank=True)
+    name = models.CharField(max_length=255, verbose_name='Имя',)
+    phone = models.CharField(max_length=20,  verbose_name='Телефон')
+    bio = models.TextField(verbose_name='Биография спикера',)
+    photo = models.ImageField(upload_to='speakers/', verbose_name='Фото спикера',)
+
+
+    video_intro = models.URLField(blank=True, null=True, verbose_name='Видео-представление')
+    telegram = models.CharField(max_length=100, blank=True,null=True, verbose_name='Telegram')
+    instagram = models.CharField(max_length=100, blank=True, null=True, verbose_name='Instagram')
+    youtube = models.CharField(max_length=100, null=True,blank=True, verbose_name='YouTube')
+
+    class Meta:
+        verbose_name = 'Спикер'
+        verbose_name_plural = 'Спикеры'
+
+    def __str__(self):
+        return self.name
 
 
 class Course(models.Model):
@@ -190,7 +204,7 @@ class FAQ(models.Model):
 class Certificate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='certificates', verbose_name='Пользователь')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='certificates', verbose_name='Курс')
-    certificate_number = models.CharField(max_length=50, unique=True, verbose_name='Номер сертификата')  # ← Добавить
+    certificate_number = models.CharField(max_length=50, unique=True, verbose_name='Номер сертификата', blank=True, null=True)
     issued_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата выдачи')
     certificate_file = models.FileField(upload_to='certificates/', blank=True, verbose_name='Файл сертификата')
 
