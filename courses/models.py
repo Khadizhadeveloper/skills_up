@@ -188,16 +188,23 @@ class FAQ(models.Model):
 
 
 class Certificate(models.Model):
-
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='certificates', verbose_name='Пользователь')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='certificates', verbose_name='Курс')
+    certificate_number = models.CharField(max_length=50, unique=True, verbose_name='Номер сертификата')  # ← Добавить
     issued_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата выдачи')
-    certificate_file = models.FileField(upload_to='certificates/', verbose_name='Файл сертификата')
+    certificate_file = models.FileField(upload_to='certificates/', blank=True, verbose_name='Файл сертификата')
 
     class Meta:
         verbose_name = 'Сертификат'
         verbose_name_plural = 'Сертификаты'
         unique_together = ['user', 'course']
+
+    def save(self, *args, **kwargs):
+        if not self.certificate_number:
+            # Генерация номера: CERT-2025-ABC123
+            import uuid
+            self.certificate_number = f"CERT-{uuid.uuid4().hex[:8].upper()}"
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user.username} - {self.course.title}"
