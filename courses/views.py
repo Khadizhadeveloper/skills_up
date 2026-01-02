@@ -10,8 +10,8 @@ from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.views.decorators.csrf import csrf_exempt
-
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.decorators import authentication_classes
 from .models import (
     User, Speaker, Course, Module, Lesson,
     Purchase, UserProgress, Review, Certificate,
@@ -26,10 +26,12 @@ from .serializers import (
     ReviewSerializer, CertificateSerializer,
     FAQSerializer, SupportSerializer, TestimonialSerializer, SiteSettingsSerializer
 )
-@csrf_exempt
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
+
 def login_view(request):
+    print("LOGIN VIEW CALLED")
     identifier=request.data.get('login')
     password=request.data.get('password')
 
@@ -85,8 +87,10 @@ def login_view(request):
         status=status.HTTP_200_OK
     )
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+
 def logout_view(request):
     logout(request)
     return Response(
@@ -96,6 +100,7 @@ def logout_view(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+
 def check_auth_view(request):
     return Response({
         'authenticated':True,
