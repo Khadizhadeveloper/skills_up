@@ -5,13 +5,19 @@ from .views import (RegisterView, UserProfileView, CourseListView, CourseDetailV
                     LessonDetailView, LessonUpdateProgressView, MyCoursesView, MyCertificatesView, MyReviewsView,
                     PurchaseListView, PurchaseCreateView, ReviewListView, ReviewCreateView, GenerateCertificateView,
                     SupportMessageListView, SupportMessageDetailView, SupportMessageCreateView, FAQListView,
-                    TestimonialListView, SiteSettingsView, SpeakerListView, SpeakerDetailView)
+                    TestimonialListView, SiteSettingsView, SpeakerListView, SpeakerDetailView, login_view, logout_view,
+                    check_auth_view, ChangePasswordView)
 
 app_name = "courses"
 
 urlpatterns = [
     path('auth/register/', RegisterView.as_view(), name='register'),
     path('auth/profile/', UserProfileView.as_view(), name='profile'),
+    path('auth/login/', login_view, name='login'),
+    path('auth/logout/', logout_view, name='logout'),
+    path('auth/check/', check_auth_view, name='check'),
+    path('auth/change_password/', ChangePasswordView.as_view(), name='change_password'),
+
     path('courses/', CourseListView.as_view(), name='course-list'),
     path('courses/<slug:slug>/', CourseDetailView.as_view(), name='course-detail'),
     path('courses/<slug:slug>/free/', CourseFreeLessonView.as_view(), name='course-free-lesson'),
