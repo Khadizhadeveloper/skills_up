@@ -6,6 +6,11 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.utils import timezone
 import uuid
+from rest_framework.decorators import api_view, permission_classes
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import (
     User, Speaker, Course, Module, Lesson,
@@ -21,6 +26,81 @@ from .serializers import (
     ReviewSerializer, CertificateSerializer,
     FAQSerializer, SupportSerializer, TestimonialSerializer, SiteSettingsSerializer
 )
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_view(request):
+    identifier=request.data.get('login')
+    password=request.data.get('password')
+
+    if not identifier or not password:
+        return Response(
+            {'error': 'Укажите логин и пароль'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    user=None
+
+    try:
+        user = User.objects.get(username=identifier)
+    except User.DoesNotExist:
+        pass
+
+    if not user:
+        try:
+            user = User.objects.get(email=identifier)
+        except User.DoesNotExist:
+            pass
+
+    if not user:
+        try:
+            user=User.objects.get(phone=identifier)
+        except User.DoesNotExist:
+            pass
+
+    if not user:
+        return Response(
+            {'error': 'Пользователь не найден'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if not user.check_password(password):
+        return Response(
+            {'error': 'Неверный пароль'},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
+    if not user.is_active:
+        return Response(
+            {'error': 'Аккаунт деактивирован'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    login(request, user)
+    return Response(
+        {
+            'message': 'Успешный вход',
+            'user': UserSerializer(user).data,
+        },
+        status=status.HTTP_200_OK
+    )
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_view(request):
+    logout(request)
+    return Response(
+        {'message': 'Вы вышли из системы'},
+        status=status.HTTP_200_OK
+    )
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def check_auth_view(request):
+    return Response({
+        'authenticated':True,
+        'user': UserSerializer(request.user).data,
+    })
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -34,6 +114,44 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user=request.user
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+
+        if not old_password or not new_password:
+            return Response(
+                {'error': 'Укажите старый и новый пароль'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not user.check_password(old_password):
+            return Response(
+                {'error': 'Неверный текущий пароль'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            validate_password(new_password, user)
+        except DjangoValidationError as e:
+            return Response(
+                {'error': list(e.messages)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user.set_password(new_password)
+        user.save()
+
+        return Response(
+            {'message': 'Пароль успешно изменен'}
+        )
+
+
+
 
 
 class CourseListView(generics.ListAPIView):
