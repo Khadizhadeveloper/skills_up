@@ -81,14 +81,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('PGDATABASE') or os.environ.get('DB_NAME', 'courses_db'),
-        'USER': os.environ.get('PGUSER') or os.environ.get('DB_USER', 'courses_user'),
-        'PASSWORD': os.environ.get('PGPASSWORD') or os.environ.get('DB_PASSWORD', ''),
-        'HOST': os.environ.get('PGHOST') or os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('PGPORT') or os.environ.get('DB_PORT', '5432'),
+        'NAME': os.environ.get('PGDATABASE'),
+        'USER': os.environ.get('PGUSER'),
+        'PASSWORD': os.environ.get('PGPASSWORD'),
+        'HOST': os.environ.get('PGHOST', 'localhost'),
+        'PORT': os.environ.get('PGPORT', '5432'),
     }
 }
-
 
 AUTH_USER_MODEL = 'courses.User'
 # Password validation
