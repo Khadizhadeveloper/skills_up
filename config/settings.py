@@ -27,7 +27,13 @@ SECRET_KEY = 'django-insecure-r1d%+p%1&^5jxzkp25-g9le)c_-w^0!w5z^f8ng5=d3krfdj0&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+
+# Добавить Railway домены автоматически
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    ALLOWED_HOSTS.append('.railway.app')
+    ALLOWED_HOSTS.append('.up.railway.app')
+
 
 
 # Application definition
