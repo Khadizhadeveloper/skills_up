@@ -40,8 +40,8 @@ schema_view = get_schema_view(
         - Отзывы и поддержка
 
         ## Аутентификация:
-        Используется Session Authentication. 
-        Для тестирования войдите через /api-auth/login/
+        Используется Basic Authentication. 
+        Для тестирования войдите через /api/auth/login/
         """,
         terms_of_service="https://www.skillsup.kg/terms/",
         contact=openapi.Contact(email="support@skilssup.kg"),
