@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 import os
-
+print("=== CREATESU_FORCE STARTED ===")
 User = get_user_model()
 
 class Command(BaseCommand):
@@ -26,3 +26,5 @@ class Command(BaseCommand):
             password=password
         )
         self.stdout.write("Superuser CREATED")
+
+print("=== CREATESU_FORCE FINISHED ===")
