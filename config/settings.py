@@ -39,6 +39,7 @@ if os.environ.get('RAILWAY_ENVIRONMENT'):
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -157,3 +158,96 @@ if os.environ.get('RAILWAY_ENVIRONMENT'):
         'https://*.railway.app',
         'https://*.up.railway.app',
     ]
+
+
+JAZZMIN_SETTINGS = {
+
+    "site_title": "Skills Up Admin",
+    "site_header": "Skills Up",
+    "site_brand": "Skills Up",
+
+    # Логотип
+    # "site_logo": "images/logo.png",
+
+
+    "welcome_sign": "Добро пожаловать в панель управления Skills Up",
+
+
+    "copyright": "Skills Up © 2026",
+
+    "icons": {
+        "auth.user": "fas fa-users",
+        "auth.Group": "fas fa-users-cog",
+        "courses.User": "fas fa-user",
+        "courses.Course": "fas fa-graduation-cap",
+        "courses.Module": "fas fa-book",
+        "courses.Lesson": "fas fa-play-circle",
+        "courses.Speaker": "fas fa-chalkboard-teacher",
+        "courses.Purchase": "fas fa-shopping-cart",
+        "courses.Review": "fas fa-star",
+        "courses.Certificate": "fas fa-certificate",
+        "courses.FAQ": "fas fa-question-circle",
+        "courses.SupportMessage": "fas fa-life-ring",
+        "courses.Testimonial": "fas fa-comment",
+        "courses.UserProgress": "fas fa-tasks",
+    },
+
+
+    "show_sidebar": True,
+    "navigation_expanded": True,
+
+
+    "theme": "flatly",
+    # cosmo, flatly, journal, litera, lumen, lux, materia, minty, pulse, sandstone, simplex, sketchy, slate, solar, spacelab, superhero, united, yeti
+
+
+    "order_with_respect_to": ["courses", "auth"],
+
+
+    "topmenu_links": [
+        {"name": "Главная", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "API Docs", "url": "/swagger/", "new_window": True},
+        {"name": "Сайт", "url": "/", "new_window": True},
+    ],
+
+
+    "show_ui_builder": False,
+
+
+    "usermenu_links": [
+        {"name": "Поддержка", "url": "/admin/courses/supportmessage/", "icon": "fas fa-life-ring"},
+    ],
+}
+
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-success",
+    "accent": "accent-teal",
+    "navbar": "navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-dark-info",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "flatly",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+}
